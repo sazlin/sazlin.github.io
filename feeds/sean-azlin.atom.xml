@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Sean Azlin</title><link href="/" rel="alternate"></link><link href="/feeds/sean-azlin.atom.xml" rel="self"></link><id>/</id><updated>2014-07-14T00:00:00-07:00</updated><entry><title>Visualizing Twitter data in near real time</title><link href="/project-rhetoracle.html" rel="alternate"></link><updated>2014-07-14T00:00:00-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2014-07-14:project-rhetoracle.html</id><summary type="html">&lt;h2&gt;Visualizing Twitter data with rheTOracle&lt;/h2&gt;
+&lt;h3&gt;What is rheTOracle?&lt;/h3&gt;
+&lt;p&gt;For our first group project at Code Fellows, I set out with two others (John Shiver and Muazzez Mira) to create a service that could collect, analyze, and visualize Twitter data in near real time. We dubbed this service &lt;a href="http://ec2-54-213-173-105.us-west-2.compute.amazonaws.com/"&gt;rheTOracle&lt;/a&gt;. With rheTOracle, we decided to target data that helped us answer a couple specific questions that we were all interested in answering:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Which programming language is the most discussed on Twitter?&lt;/li&gt;
+&lt;li&gt;For each programming language, which @user talks about that language the most?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We later tacked on a few smaller questions because it was fun visualizing the answers:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What was the last Tweet mentioning a programming language?&lt;/li&gt;
+&lt;li&gt;Where was the last Tweet mentioning a programming language Tweeted from?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So, what is rheTOracle? rheTOracle is a service that collects, aggregates, processes, and visualizes Twitter data in near-real time in an effort to help answer a set of specific questions. It's essentially a rich, living dashboard that grows and evolves right in front of you.&lt;/p&gt;
+&lt;h3&gt;What makes rheTOracle special?&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;rheTOracle provides quantitative insight about specific topics using Twitter data in a way that is really hard to do otherwise.&lt;/li&gt;
+&lt;li&gt;rheTOracle just works for everyone. There is no sign-up or sign-in to fuss with.&lt;/li&gt;
+&lt;li&gt;rheTOracle updates in near-real time automagically. No refreshing necessary.&lt;/li&gt;
+&lt;li&gt;It's free! You're welcome, Internet :)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;How is it built?&lt;/h3&gt;
+&lt;p&gt;rheTOracle's architecture is comprised of multiple independent services deployed across several AWS nodes. Each indepedent service performs a core function for the overall experience:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Filter Map&lt;/strong&gt;: Basically a Python dictionary that captures both a whitelist and a blacklist of relevant #hashtags, @users, and keywords and relates those to a specific topic.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Twitter Worker&lt;/strong&gt;: A Python script that collects and processes Twitter stream data according to the criteria defined by our Filter Map.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PostgreSQL DB&lt;/strong&gt;: A PostgreSQL DB instance on AWS stores the Twitter data that the Twitter Worker collects.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Redis&lt;/strong&gt;: A Redis server is used to cache SQL query results and insulate the PostgreSQL DB from an overwhelming # of SQL requests from clients.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Flask service&lt;/strong&gt;: A Python service, built using the Flask microframework, that services requests from clients that are monitoring rheTOracle's data. The Flask service pulls results from the Redis server as needed, which in turn pulls data from our SQL DB periodically.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Frontend&lt;/strong&gt;: HTML/CSS/Javascript that renders data provided by the Flask service using AJAX, Google Visualizations, and Ammchart (a JS charting library). rheTOracle's front end pulls data from the Flask service every 3 seconds and updates the page's charts as you watch - no reloading of the overall page is required.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Want to know more? Check out our source on GitHub.&lt;/p&gt;
+&lt;h3&gt;Plans for the Future?&lt;/h3&gt;
+&lt;p&gt;We have a second project week coming up and we all intend to continue working on rheTOracle with the goal of shipping a solid beta in August. Two big ideas we have for the future:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Crowd-source weekly questions that we can tackle with our service and build-up a library of questions &amp;amp; answers over time.&lt;/li&gt;
+&lt;li&gt;Build out a sentiment analysis service using a composite of multiple machine learning algorithms and run that service against our database of collected tweets. &lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Python"></category><category term="CodeFellows"></category><category term="Business Intelligence"></category></entry><entry><title>Creating a Blog on GitHub.io with Python</title><link href="/creating-a-blog-on-GitHub-dot-io-with-Python.html" rel="alternate"></link><updated>2014-07-05T00:00:00-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2014-07-05:creating-a-blog-on-GitHub-dot-io-with-Python.html</id><summary type="html">&lt;h2&gt;Creating a Blog on GitHub.io with Python&lt;/h2&gt;
+&lt;p&gt;This article walks through the creation and publication of a blog on GitHub.io (aka GitHub Pages) using a Python static site generator called &lt;a href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt;. To walk through this article you'll need some basic Python skills and a GitHub account.&lt;/p&gt;
+&lt;h3&gt;Why Python?&lt;/h3&gt;
+&lt;p&gt;I'm currently attending an 8-week Python Development Accelerator at &lt;a href="http://codefellows.org"&gt;Code Fellows&lt;/a&gt; in Seattle, WA. My professional goal right now is to immerse myself in all things Python and become an expert in the language. Python is excellent for creating web sites with frameworks such as Flask, Pyramid, and Django, so why not use it to make a blog?&lt;/p&gt;
+&lt;h3&gt;My Goals for my Blog&lt;/h3&gt;
+&lt;p&gt;I had some general goals in mind when picking a blog platform to migrate to. It's well worth your time to take a minute and think through what it is you want out of your blog before getting started. Here were my goals:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create a site where I can share professional articles, tutorials, and other musings with the world&lt;/li&gt;
+&lt;li&gt;Have that site be easy to setup and maintain&lt;/li&gt;
+&lt;li&gt;Make it easy to author posts for the site, &lt;strong&gt;including when I'm offline&lt;/strong&gt;, using &lt;a href="http://en.wikipedia.org/wiki/Markdown"&gt;Markdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Exercise my Python and web dev skills&lt;/li&gt;
+&lt;li&gt;Spend as little money as possible, ideally none :)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;The Key Components&lt;/h3&gt;
+&lt;h4&gt;Hosting: GitHub.io&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt; It's free, I can use git both for source control and for publishing articles, and I already spend tons of time on GitHub anyway.&lt;/p&gt;
+&lt;h4&gt;Platform: Pelican&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt; Pelican is a static site generator. A &lt;em&gt;static&lt;/em&gt; site is one where the site's HTML is stored on disk and doesn't need to be constructed &lt;em&gt;dynamically&lt;/em&gt; at runtime to service individual requests. Wordpress and Tumblr are examples of dynamic sites because they construct the HTML that you see at runtime based on content that lives in a database. Compared to dynamic sites, static sites can often be faster, more secure, cheaper to host, easier to move/migrate, and entire sites can be version-controlled easily. &lt;/p&gt;
+&lt;p&gt;Pelican is also open source, easy to get started with, fairly popular, has an active community of supporters and plugin developers and, of course, is written in Python :) &lt;/p&gt;
+&lt;h4&gt;Frontend: Bootstrap&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt; Using &lt;a href="http://getbootstrap.com/"&gt;Bootstrap&lt;/a&gt; allows me to prop up a great mobile-first frontend for my site with very little effort. It's a great foundation to build on. I won't get into details about Bootstrap in this article but I've provided some links on how to learn more about using Bootstrap with Pelican below. &lt;/p&gt;
+&lt;h4&gt;Deployment: Fabric&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt; Running the quick start script for Pelican will give you a basic Fabric script for free that is pretty easy to modify and use without much fuss. I talk more about Fabric in step 2 below.&lt;/p&gt;
+&lt;h3&gt;Step 1: Start a Blog Project&lt;/h3&gt;
+&lt;p&gt;The first thing I do when starting a new project is use &lt;a href="http://virtualenv.readthedocs.org/en/latest/virtualenv.html"&gt;virtualenv&lt;/a&gt; and &lt;a href="http://virtualenvwrapper.readthedocs.org/en/latest/"&gt;virtualenvwrapper&lt;/a&gt; to create a dev environment and project folder for my project using virtualenvwrapper's &lt;code&gt;mkproject&lt;/code&gt; command: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ mkproject blog
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you work with Python and you don't know what virtualenv or virtualenvwrapper are then I highly recommend checking them out to streamline your Python development workflow.&lt;/p&gt;
+&lt;h3&gt;Step 2: Install Pelican and Create your Blog&lt;/h3&gt;
+&lt;p&gt;Before installing Pelican, make sure you're using Python 2.7 for this project. It's the recommended version of Python for Pelican and it's the version I'm using for this tutorial. You should also install &lt;a href="https://pip.pypa.io/en/latest/installing.html"&gt;pip&lt;/a&gt; if you haven't done so already.&lt;/p&gt;
+&lt;p&gt;Let's get this show on the road! Start by installing Pelican using &lt;code&gt;pip install&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ pip install pelican
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Pelican supports authoring content with reST OOtB but I prefer Markdown myself. If you're like me then go ahead and install Markdown next:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ pip install markdown
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Once that completes you can run the following command to create an initial site:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ pelican-quickstart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You'll then be asked to answer several questions. Here are the answers I give it for my personal site:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;seans-mbp:blog sazlin$ pelican-quickstart
+Welcome to pelican-quickstart v3.4.0.
+
+This script will help you create a new Pelican-based website.
+
+Please answer the following questions so this script can generate the files
+needed by Pelican.
+
+Using project associated with current virtual environment.Will save to:
+/Users/sazlin/projects/blog
+
+&amp;gt; What will be the title of this web site? Sean Azlin&amp;#39;s Blog
+&amp;gt; Who will be the author of this web site? Sean Azlin
+&amp;gt; What will be the default language of this web site? [en] en
+&amp;gt; Do you want to specify a URL prefix? e.g., http://example.com   (Y/n) n
+&amp;gt; Do you want to enable article pagination? (Y/n) n
+&amp;gt; Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n) Y
+&amp;gt; Do you want an auto-reload &amp;amp; simpleHTTP script to assist with theme and site development? (Y/n) Y
+&amp;gt; Do you want to upload your website using FTP? (y/N) N
+&amp;gt; Do you want to upload your website using SSH? (y/N) N
+&amp;gt; Do you want to upload your website using Dropbox? (y/N) N
+&amp;gt; Do you want to upload your website using S3? (y/N) N
+&amp;gt; Do you want to upload your website using Rackspace Cloud Files? (y/N) N
+&amp;gt; Do you want to upload your website using GitHub Pages? (y/N) Y
+&amp;gt; Is this your personal page (username.github.io)? (y/N) Y
+Done. Your new project is available at /Users/sazlin/projects/blog
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Afterwards, your project's directory should look something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;.
+├── Makefile
+├── content
+├── develop_server.sh
+├── fabfile.py
+├── output
+├── pelicanconf.py
+└── publishconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So what's all this? &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;content&lt;/code&gt; directory is essentially where the source files for your site live. The source for your articles will live there in addition to any resources, such as images, that you include in your articles.&lt;/li&gt;
+&lt;li&gt;The&lt;code&gt;output&lt;/code&gt; directory is where your site's html, css, etc. will build into. When you build your site the source files in your &lt;code&gt;content&lt;/code&gt; directory will be built into output files in your &lt;code&gt;output&lt;/code&gt; directory.  &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fabfile.py&lt;/code&gt; is a Python script used by &lt;a href="http://www.fabfile.org/"&gt;Fabric&lt;/a&gt;, a deployment automation tool that we'll be using for this tutorial. We'll use Fabric to build the site after we make edits, to serve the site locally for testing, and eventually to publish our site to GitHub.io&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pelicanconf.py&lt;/code&gt; is a configuration file used by Pelican to build the site. We'll play with the settings in this file shortly.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let's see if we can give this site a first look-over. To do that we need to install Fabric and then use it to build and serve the site locally:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ pip install fabric
+...
+$ fab build
+...
+$ fab serve
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here's what the last two lines look like for me:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;seans-mbp:blog sazlin$ fab build
+[localhost] local: pelican -s pelicanconf.py
+WARNING: Feeds generated without SITEURL set properly may not be valid
+WARNING: No valid files found in content.
+Done: Processed 0 article(s), 0 draft(s) and 0 page(s) in 0.10 seconds.
+
+Done.
+[blog]
+seans-mbp:blog sazlin$ fab serve
+Serving on port 8000 ...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ignore the warnings for now. Open up your favorite browser and browse to &lt;code&gt;localhost:8000&lt;/code&gt;. You should see a fairly simple blog with your name on it.&lt;/p&gt;
+&lt;p&gt;If you take a minute to look over your site's directory structure then you'll see that there's a lot more stuff in it now, especially in your &lt;code&gt;output&lt;/code&gt; directory. Now you can see all the HTML, CSS, and images that Pelican builds for your site. &lt;/p&gt;
+&lt;p&gt;Ok, so here's a question: Where is &lt;em&gt;your&lt;/em&gt; content going to live in that output directory? In my case, I want to have my articles live in their own folder and my images live in their own folder. I also want a folder for my site's pages that aren't articles, such as my "About Me" page. To accomplish this, I'm going to ctrl+c in my terminal and create a few directories:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ mkdir ./content/articles
+$ mkdir ./content/images
+$ mkdir ./content/pages
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that I created my new folders &lt;strong&gt;in the &lt;code&gt;content&lt;/code&gt; directory&lt;/strong&gt;, not in the &lt;code&gt;output&lt;/code&gt; directory. AFAIK, you should never need to add content to the &lt;code&gt;output&lt;/code&gt; directory manually.&lt;/p&gt;
+&lt;p&gt;At this point, the directory structure of the blog project should look something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;.
+├── Makefile
+├── blog.sublime-project
+├── cache
+│   ├── ArticlesGenerator-Readers
+│   └── PagesGenerator-Readers
+├── content
+│   ├── articles
+│   └── images
+│   └── pages
+├── develop_server.sh
+├── fabfile.py
+├── fabfile.pyc
+├── output
+│   ├── archives.html
+│   ├── authors.html
+│   ├── categories.html
+│   ├── index.html
+│   ├── tags.html
+│   └── theme
+│       ├── css
+│       │   ├── main.css
+│       │   ├── pygment.css
+│       │   ├── reset.css
+│       │   ├── typogrify.css
+│       │   └── wide.css
+│       └── images
+│           └── icons
+│               ├── aboutme.png
+│               ├── bitbucket.png
+│               ├── delicious.png
+│               ├── facebook.png
+│               ├── github.png
+│               ├── gitorious.png
+│               ├── gittip.png
+│               ├── google-groups.png
+│               ├── google-plus.png
+│               ├── hackernews.png
+│               ├── lastfm.png
+│               ├── linkedin.png
+│               ├── reddit.png
+│               ├── rss.png
+│               ├── slideshare.png
+│               ├── speakerdeck.png
+│               ├── stackoverflow.png
+│               ├── twitter.png
+│               ├── vimeo.png
+│               └── youtube.png
+├── pelicanconf.py
+├── pelicanconf.pyc
+└── publishconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Before going and creating a first blog post we should get our &lt;code&gt;pelicanconf.py&lt;/code&gt; file in working order. Go ahead and open &lt;code&gt;pelicanconf.py&lt;/code&gt; in your favorite editor and make the following changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Change the &lt;code&gt;TIMEZONE&lt;/code&gt; setting to be a value that makes sense for you. I'm using "US/Pacific" myself.&lt;/li&gt;
+&lt;li&gt;Change the &lt;code&gt;LINKS&lt;/code&gt; tuple to include only the links that you want to show up on your site (if you want any links)&lt;/li&gt;
+&lt;li&gt;Change the &lt;code&gt;SOCIAL&lt;/code&gt; tuple to include your Twitter, LinkedIn, GitHub, Facebook, and other social links that you want to show up on your page.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;articles&lt;/code&gt; and &lt;code&gt;pages&lt;/code&gt; directories that we created previously will be recognized by Pelican automatically, but the &lt;code&gt;images&lt;/code&gt; directory will not. To make sure the &lt;code&gt;images&lt;/code&gt; directory is recognized and automatically copied into the &lt;code&gt;output&lt;/code&gt; folder whenever we build the site, we need to add the following: &lt;code&gt;STATIC_PATHS = ['images',]&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here's what my updated &lt;code&gt;pelicanconf.py&lt;/code&gt; looks like. Try creating one with your own links:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;span class="c"&gt;# -*- coding: utf-8 -*- #&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;unicode_literals&lt;/span&gt;
+
+&lt;span class="n"&gt;AUTHOR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;Sean Azlin&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;SITENAME&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;u&amp;quot;Sean Azlin&amp;#39;s Blog&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;SITEURL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;PATH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;content&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;TIMEZONE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;US/Pacific&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;DEFAULT_LANG&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;u&amp;#39;en&amp;#39;&lt;/span&gt;
+
+&lt;span class="c"&gt;# Feed generation is usually not desired when developing&lt;/span&gt;
+&lt;span class="n"&gt;FEED_ALL_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+&lt;span class="n"&gt;CATEGORY_FEED_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+&lt;span class="n"&gt;TRANSLATION_FEED_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+
+&lt;span class="c"&gt;# Blogroll&lt;/span&gt;
+&lt;span class="n"&gt;LINKS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;  &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;CodeFellows&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;http://codefellows.org&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),)&lt;/span&gt;
+
+&lt;span class="c"&gt;# Social widget&lt;/span&gt;
+&lt;span class="n"&gt;SOCIAL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Twitter&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;http://twitter.com/SeanAzlin2&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+          &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;LinkedIn&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;http://linkedin.com/in/seanazlin&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+          &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;GitHub&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;http://github.com/sazlin&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),)&lt;/span&gt;
+
+&lt;span class="n"&gt;STATIC_PATHS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;images&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="n"&gt;DEFAULT_PAGINATION&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+
+&lt;span class="c"&gt;# Uncomment following line if you want document-relative URLs when developing&lt;/span&gt;
+&lt;span class="c"&gt;#RELATIVE_URLS = True&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can learn more about Pelican's settings &lt;a href="http://pelican.readthedocs.org/en/3.3.0/settings.html#basic-settings"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Ok, now let's create a simple post to prove this whole thing works. In your terminal:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ touch ./content/articles/first_post.md
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Open the file you just created in your favorite editor and copy the following into it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;Title: My First Blog Post
+Date: 2014-7-05 17:20
+Category: MyCategory
+Tags: Tag1, Tag2
+Slug: first-post
+Author: Your Name
+Summary: This is a my first blog post here.
+
+This is a bunch of awesome content that I&amp;#39;ve written for my post!
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that Pelican expects and supports the definition of lots of metadata at the beginning of your articles. You can learn more about authoring content on Pelican &lt;a href="http://docs.getpelican.com/en/3.3.0/getting_started.html#writing-content-using-pelican"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Save that post and, in your terminal, rebuild the blog and take another look at it in your browser:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ fab rebuild
+$ fab serve
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Your blog should now show a first blog post front and center. You should also see that your category "MyCategory" is shown in the navbar, and your tags are shown on the right. Pelican will automatically group your articles by the categories and tags you set for them and make those available in various parts of the blog's UI. Awesome!&lt;/p&gt;
+&lt;p&gt;On the bottom you should also see some social icons and some links that reflect what you set in your &lt;code&gt;pelicanconf.py&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;Congrats! You now have a simple Pelican blog that you can expand on in a whole bunch of ways. Actually, now's a good time to take a minute and create a git repo for your blog. Let's do that now.&lt;/p&gt;
+&lt;p&gt;Create a repo on GitHub with a .gitignore file for Python. Call it "blog-repo" or something similar. &lt;strong&gt;NOTE THAT THIS IS NOT THE REPO THAT GITHUB.IO WILL USE&lt;/strong&gt;. This is a repo for your blog's source and config files only. You'll create a second repo for GitHub.io later.&lt;/p&gt;
+&lt;p&gt;Copy the new repo's clone URL and go back into your terminal at the root directory for your project. Run the following commands in-order to add your project to the repo.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ fab clean
+$ git init
+$ git remote add origin &amp;lt;your repo url&amp;gt;
+$ git pull origin master
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first command, &lt;code&gt;fab clean&lt;/code&gt;, removes all of the output files (which we don't want in our project's repo since we'll be tracking them in our GitHub.io repo later). The last command, &lt;code&gt;git pull origin master&lt;/code&gt;, gets the README file and .gitignore file that GitHub created for us. In your favorite editor, open the .gitignore file and add the following entries to it and save:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;cache/
+output/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ok, now run the following commands back in your terminal:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ git add .
+$ git commit -m &amp;#39;Adding blog project files to repo&amp;#39;
+$ git push origin master
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now your blog source and project files are safe in your GitHub repo. Next step: Deploy to GitHub.io.&lt;/p&gt;
+&lt;h3&gt;Step 3: Deploy to GitHub.io with Fabric&lt;/h3&gt;
+&lt;p&gt;This part is a little bit tricky. One mistake I made early on was thinking that I could use a single GitHub repo for my entire project &lt;em&gt;and&lt;/em&gt; for GitHub.io. This doesn't work, even if you start with the GitHub.io repo. So, &lt;strong&gt;learn from my mistake and use two repos: one for your project and source files, and one for the output you actually want GitHub.io to host for you&lt;/strong&gt;. You already created the repo for your source and project above so now we'll create the repo that GitHub.io will use.&lt;/p&gt;
+&lt;p&gt;To create a GitHub.io repo, go to GitHub and create a repo that has the following repo name: &lt;code&gt;&amp;lt;YOUR USERNAME&amp;gt;.github.io&lt;/code&gt;. For example: my GitHub username is 'sazlin' so my GitHub repo is called &lt;a href="https://github.com/sazlin/sazlin.github.io"&gt;sazlin.github.io&lt;/a&gt;. &lt;strong&gt;Getting the name of this repo correct is critical! GitHub.io will not pick up your Pelican site if the name of the repo doesn't match that schema.&lt;/strong&gt; Once you've created your &lt;code&gt;username.github.io&lt;/code&gt; repo, copy the GitHub URL for it and return to your terminal. &lt;strong&gt;DO NOT continue with the directions on the github.io homepage&lt;/strong&gt;. You'll see why in a second.&lt;/p&gt;
+&lt;p&gt;Ok, back in your terminal you're going to want to install &lt;a href="https://github.com/davisp/ghp-import"&gt;ghp-import&lt;/a&gt;. This tool make it a little bit easier to put the right content into the right branch for GitHub.io. Here are the commands you want to run through to publish your content to GitHub.io for the first time!&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ pip install ghp-import
+...
+$ pelican content -o output -s pelicanconf.py
+$ ghp-import output
+$ git push &amp;lt;your &amp;lt;username&amp;gt;.github.io repo URL&amp;gt; gh-pages:master
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's it! You've just pushed your blog's output to GitHub.io. Within about 10 minutes you should be able to go to &lt;code&gt;http://&amp;lt;your username&amp;gt;.github.io&lt;/code&gt; and see your simple Pelican blog published for all the world to see.&lt;/p&gt;
+&lt;p&gt;The last thing that you should probably do now is automate the last set of commands you just ran for whenever you want to update your blog on GitHub.io. Open your &lt;code&gt;fabfile.py&lt;/code&gt; file and create a method like this one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;publish&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;pelican content -o output -s pelicanconf.py&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;ghp-import output&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;git push https://github.com/sazlin/sazlin.github.io.git gh-pages:master&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now if you ever have a new article or page to publish you can push it up by running:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ fab publish
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Last, but not least, be sure to commit your latest source and project settings to your blog's project repo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ fab clean
+$ git add .
+$ git commit -m &amp;quot;Added publish() to fabfile.py for deploying to GitHub.io&amp;quot;
+$ git push origin master
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;What's Next?&lt;/h3&gt;
+&lt;p&gt;You're on your way! Next you might want to peruse some other great articles and documentation about Pelican. Here are a couple resources and plugins I found useful:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://pelican.readthedocs.org/en/3.3.0/"&gt;Official Pelican Docs&lt;/a&gt;: These docs are actually pretty good and are well worth bookmarking for when you have questions about configuring or using Pelican.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://chdoig.github.io/create-pelican-blog.html"&gt;Creating you blog with Pelican&lt;/a&gt;: This article by Christine Doig has some great info about how to change up the look and feel of your blog.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/DandyDev/pelican-bootstrap3"&gt;pelican-bootstrap3&lt;/a&gt;: This Pelican theme enables you to use Bootstrap with your Pelican site.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/getpelican/pelican-plugins"&gt;pelican-plugins&lt;/a&gt;: A collection of Pelican plugins, some of which you might want to use. I recommend &lt;code&gt;liquid_tags.img&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://bootswatch.com/"&gt;Bootswatch&lt;/a&gt;: A great collection of free Bootstrap themes.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://disqus.com/websites/"&gt;Disqus&lt;/a&gt;: If you want comments for your articles then check out Disqus. I haven't used it personally but I've heard good things about it.&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="Python"></category><category term="Pelican"></category><category term="CodeFellows"></category></entry><entry><title>Windows 8 Puzzle Game</title><link href="/win-8-puzzle-game-progress.html" rel="alternate"></link><updated>2014-03-17T12:18:56-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2014-03-17:win-8-puzzle-game-progress.html</id><summary type="html">&lt;p&gt;Some ugly but fun screens from my current side project. The top screen
+is a concept done in PowerPoint using a early prototype screenshot for
+the game board.&lt;/p&gt;
+&lt;p&gt;The second screen is a screen shot of the latest prototype. The textures
+are obviously super ugly for the various types of blocks (or "Runes"),
+but lately I've been focused on getting the block snapping &amp;amp; alignment
+algorithm to work correctly on devices with various screen sizes (7",
+8", 10", etc.).&lt;/p&gt;
+&lt;p&gt;The third screen is a shot of when I was working some basic pattern
+recognition into the game, since a big point of the game is to combine
+runes into 2D patterns called "Glyphs". In this screen any 2x2 pattern
+of green blocks was to be combined into a 2x2 red glyph. Success!&lt;/p&gt;
+&lt;p&gt;The last screen is one of the first screenshots that I took of the game
+after I finished a first version of the snapping &amp;amp; alignment algorithm.
+The circles represent "snap points" that active blocks are looking for
+as they are moved around the game board.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="PPT Concept Image" src="../images/elem-game1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Latest Prototype Screen" src="../images/elem-game2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Pattern Recognition Debug Screen" src="../images/elem-game3.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="First Game Screen" src="../images/elem-game4.png" /&gt;&lt;/p&gt;</summary><category term="Game Development"></category></entry><entry><title>Optimizing Word 2013 for Windows 8 RT</title><link href="/optimizing-word.html" rel="alternate"></link><updated>2012-10-02T11:05:00-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2012-10-02:optimizing-word.html</id><summary type="html">&lt;p&gt;Check out &lt;a href="http://blogs.office.com/2012/10/02/optimizing-word-2013-for-windows-rt/"&gt;my recent blog post&lt;/a&gt; on the Word Team's blog about how we optimized Word 2013 for Windows 8 RT.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://blogs.office.com/2012/10/02/optimizing-word-2013-for-windows-rt/"&gt;http://blogs.office.com/2012/10/02/optimizing-word-2013-for-windows-rt/&lt;/a&gt;&lt;/p&gt;</summary><category term="Performance"></category><category term="Word Team"></category></entry><entry><title>Drop ship made with Blender 3D</title><link href="/drop-pod-video.html" rel="alternate"></link><updated>2011-04-02T17:32:44-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2011-04-02:drop-pod-video.html</id><summary type="html">&lt;p&gt;One of the vehicles I created using Blender 3D for a Windows Phone 7 game I worked on recently.
+&lt;iframe src="http://www.tumblr.com/video/seanazlin/4296970091/500" id="tumblr_video_iframe_4296970091" class="tumblr_video_iframe" width="500" height="375" style="display:block;background-color:transparent;overflow:hidden;" allowtransparency="true" frameborder="0" scrolling="no" webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;&lt;/p&gt;</summary><category term="Game Development"></category></entry><entry><title>TribeMind Studios</title><link href="/TribMind-Studios.html" rel="alternate"></link><updated>2007-04-02T04:02:00-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2007-04-02:TribMind-Studios.html</id><summary type="html">&lt;p&gt;Studios](www.tribemind.com)&lt;/p&gt;
+&lt;p&gt;Ever want to start your own game development company? We did: &lt;a href="www.tribemind.com"&gt;TribeMind
+Studios&lt;/a&gt;. We had a blast, and our business plan was &lt;a href="http://www.rit.edu/research/simonecenter/?q=events/rit-business-plan-contest"&gt;award winning&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;{% img ../images/tribemind-montage.jpg 500 auto [TribeMind Montage] %}&lt;/p&gt;</summary><category term="Game Development"></category><category term="TribeMind Studios"></category></entry><entry><title>Low Poly Chasis Vid</title><link href="/Low%20Poly%20Chasis%20Vid.html" rel="alternate"></link><updated>2007-04-02T03:02:00-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2007-04-02:Low Poly Chasis Vid.html</id><summary type="html">&lt;p&gt;One of the few videos we actually rendered of our game assets:
+&lt;iframe src="http://www.tumblr.com/video/seanazlin/4280542241/400" id="tumblr_video_iframe_4280542241" class="tumblr_video_iframe" width="400" height="300" style="display:block;background-color:transparent;overflow:hidden;" allowtransparency="true" frameborder="0" scrolling="no" webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;&lt;/p&gt;</summary><category term="Game Development"></category><category term="TribeMind Studios"></category></entry><entry><title>Tunnel Racer (DX and 3DSMax)</title><link href="/tunnel-racer.html" rel="alternate"></link><updated>2007-04-02T01:34:00-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2007-04-02:tunnel-racer.html</id><summary type="html">&lt;p&gt;As a follow up to the simple tri-strip and terrain project, we spent the
+rest of this awesome class at RIT creating a 3D game of our
+choice. Obviously, this was a blast. I ended up taking the reigns on the
+project since I had been working on game engines earlier that academic
+year.The idea was to create a 3D Tunnel Racing game similar to an old
+but still awesome game called &lt;a href="http://en.wikipedia.org/wiki/Ballistics_(video_game)"&gt;Ballistics&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Tunnel Game Screen" src="../images/tunnel_game1.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Some cool things we did with our game:
+&lt;em&gt; We created our levels as sets of Direct3D meshes manually in 3DSMax. One mesh was a visual tube that we rendered for the user. The second mesh was a clone of the visual tube but it was invisible and had a smaller tube radius. The radiai of the second tube mesh were then used at load time to generate the invisible track that a racer would drive on. The third mesh was a bunch of buildings and landscapes for our "outdoor" parts of the game. Basically, we turned 3DSMax into our level builder without any retooling. Awesome.
+&lt;/em&gt; We skewed the POV angle of the camera as the racer sped up, just like in Ballistics.
+&lt;em&gt; We implemented simple collision detection and created a "defuse the bombs by running into them" mode.
+&lt;/em&gt; We used sound well, kind of got multitexturing to work (see below), mipmapping, bump mapping, and high resolution textures.
+&lt;em&gt; We got to play with some advanced math for what we called our "tube physics"
+&lt;/em&gt; We actually had a semi-fun game after only 2 months of class work!&lt;/p&gt;
+&lt;p&gt;Some challenges we faced and lessons we learned:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The D3D .mesh format we used was fine for basic geometry, but it was useless for exporting material information at all. Exporting multiple sets of UV coordinates was impossible, which limited our options for multitexturing.&lt;/li&gt;
+&lt;li&gt;It was really hard to get 3DSMax to give us consistent output for our invisible track, which led to some buggy parts in the level. The racer would start moving really slowly at some points in a track. This was due to 3DSMax randomly increasing the # of radiai in the invisible track, which threw off our simple level logic at load time.&lt;/li&gt;
+&lt;li&gt;Game development is time consuming and requires commitment. Flaky students who want to get an easy A should go take underwater basket weaving instead. Or at least stay out of my project groups.&lt;/li&gt;
+&lt;li&gt;Getting textures to look right takes a long time.&lt;/li&gt;
+&lt;li&gt;Materials are very important in general, and they are impossible to get right without serious forethought into how they are going to be created and loaded for rendering.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Unfortunately, I was busy starting another big game project during the presentation of the final game and, amidst the chaos, I forgot to email myself the game's source or even some decent screenshots. Oy! It's no big deal - the project was a big hack-job anyway.&lt;/p&gt;</summary><category term="Game Development"></category></entry><entry><title>Cross-platform Game Engine</title><link href="/cross-plat-game-engine.html" rel="alternate"></link><updated>2007-04-02T00:50:00-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2007-04-02:cross-plat-game-engine.html</id><summary type="html">&lt;p&gt;For my second CG 2 project at RIT, I proposed to design and build a simple cross-platform game engine in C++. I did it mostly on Linux using VIM and CLI tools, which was of course a blast. The engine included an adapter layer that essentially abstracted away the graphics API for a given platform when implementing the game.&lt;/p&gt;
+&lt;p&gt;{% img ../images/game_eng1.jpg 640 auto [Game Eng Screen 1] %}
+{% img ../images/game_eng2.jpg 320 auto [Game Eng Screen 2] %}{% img images/game_eng3.jpg 320 auto [Game Eng Screen 3] %}
+{% img ../images/game_eng4.jpg 320 auto [Game Eng Screen 4] %}{% img images/game_eng5.jpg 320 auto [Game Eng Screen 5] %}&lt;/p&gt;
+&lt;p&gt;Through this project, I succeeded in exploring the challenges of creating even the simplest game engine. As one might expect, it was a feat far more challenging than I had at first imagined. Despite this, I successfully created a POC prototype using the engine that built and ran on Linux, Unix, and Windows. It's a game that the computer plays against itself over and over in an endless battle for spherical domination.&lt;/p&gt;
+&lt;p&gt;Fun fact: The game is simple and 100% deterministic and &lt;em&gt;should&lt;/em&gt; always end in a tie, but through the magic of &lt;a href="http://en.wikipedia.org/wiki/Chaos_theory"&gt;Chaos Theory&lt;/a&gt; it always presents the user with a vivid and unpredictable battle of cloud-like patterns.&lt;/p&gt;</summary><category term="Game Development"></category></entry><entry><title>DirectX Tri-strip</title><link href="/DirectX-Tri-strip.html" rel="alternate"></link><updated>2006-04-02T03:27:00-07:00</updated><author><name>Sean Azlin</name></author><id>tag:,2006-04-02:DirectX-Tri-strip.html</id><summary type="html">&lt;p&gt;Nothing makes you appreciate a graphics API more than when you try to
+render a terrain mesh without one:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Heightmap" src="../images/heightmap.jpg" /&gt;
+&lt;img alt="tristrip 1" src="../images/tristrip1.jpg" /&gt;
+&lt;img alt="tristrip 2" src="../images/tristrip2.jpg" /&gt;&lt;/p&gt;</summary><category term="Computer Graphics"></category></entry><entry><title>CG2 - Raytracer</title><link href="/CG2-Raytracer.html" rel="alternate"></link><updated>2005-04-02T02:28:00-08:00</updated><author><name>Sean Azlin</name></author><id>tag:,2005-04-02:CG2-Raytracer.html</id><summary type="html">&lt;p&gt;Some renderings from my CG 2 raytracer. Built completely from scratch w/
+C on a Sun workstation. &amp;lt;3&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Reflection" src="../images/reflection.jpg" /&gt;
+&lt;img alt="Refraction" src="../images/refraction.jpg" /&gt;&lt;/p&gt;</summary><category term="Computer Graphics"></category></entry></feed>
